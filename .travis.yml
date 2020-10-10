@@ -1,0 +1,21 @@
+language: generic
+sudo: required
+services: 
+  - docker
+
+before_install:
+  - docker build -t spraguesy/react-test -f ./client/Dockerfile.dev ./client
+
+script:
+  - docker run -e CI=true -t spraguesy/react-test npm test -- --coverage
+
+after_success:
+  - docker build -t spraguesy/fib-client ./client
+  - docker build -t spraguesy/fib-nginx ./nginx
+  - docker build -t spraguesy/fib-server ./server
+  - docker build -t spraguesy/fib-worker ./worker
+  - echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_ID" --password-stdin
+  - docker push spraguesy/fib-client
+  - docker push spraguesy/fib-nginx
+  - docker push spraguesy/fib-server
+  - docker push spraguesy/fib-worker
