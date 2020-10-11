@@ -19,3 +19,17 @@ after_success:
   - docker push spraguesy/fib-nginx
   - docker push spraguesy/fib-server
   - docker push spraguesy/fib-worker
+
+
+deploy:
+  edge: true
+  provider: elasticbeanstalk
+  region: us-east-2
+  app: fib-docker
+  env: FibDocker-env
+  bucket_name: elasticbeanstalk-us-east-2-431240309861
+  bucket_path: fib-docker
+  on:
+    brnach: master
+  access_key_id: $AWS_ACCESS_KEY
+  secret_access_key: $AWS_SECRET_KEY
